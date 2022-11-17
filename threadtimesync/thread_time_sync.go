@@ -25,6 +25,7 @@ func (w *Wait) Waiting() {
 	}
 }
 
+// Verify if all threads have terminated
 func (w *Wait) VerifyFinished() bool {
 	return w.completedThreads == w.actualThreads
 }

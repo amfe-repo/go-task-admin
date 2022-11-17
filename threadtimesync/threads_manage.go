@@ -6,6 +6,7 @@ import (
 	"github.com/charmbracelet/bubbles/list"
 )
 
+// Threads Structure
 type Threads struct {
 	waiter      Wait
 	queue       ThreadsQueue
@@ -29,15 +30,18 @@ func (th *Threads) InsertThread(handler Func, ag *[]list.Item) {
 func (th *Threads) StartThreads() {
 	th.timeElapsed = 0
 
+	// Count time when threads init to execute
 	start := time.Now()
 
 	for th.queue.Size > 0 {
+		// Get first element of queue
 		node, err := th.queue.Pop()
 
 		if err != 0 {
 			return
 		}
 
+		// Create concurrent thread
 		th.createThreads(node.DataExecute, node.Argument)
 	}
 
@@ -55,11 +59,14 @@ func (th *Threads) SetTimeSleep(time int) {
 //Create function and becomes a thread
 func (th *Threads) createThreads(handler Func, ag *[]list.Item) {
 
+	// Add count of thread in execution
 	th.waiter.AddThread(1)
 
+	// Execute concurrently the thread
 	go func() {
 		time.Sleep(time.Duration(th.sleepTime) * time.Second)
 		handler(ag)
+		// Delete count of thread
 		th.waiter.FinishThread()
 	}()
 
